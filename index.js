@@ -31,13 +31,13 @@ server.post('/api/users', (req, res) => {
     if(newUser.name) {
         db.insert(newUser)
         .then( dataBaseUser => {
-            res.status(200).json(dataBaseUser)
+            res.status(200).json({success: "Created"})
         })
-        .catch((err) => {
-            res.status(400).json({err: '/get failed'})
+        .catch( err => {
+            res.status(500).json({err: "There was an error while saving the user to the database"})
         })
     }else {
-        res.status(400).statusMessage({err: 'bad data'});
+        res.status(400).json({err: 'Please provide name and bio for the user'});
     }
 });
 
