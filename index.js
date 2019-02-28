@@ -61,6 +61,22 @@ server.delete('/api/users/:id',(req,res) => {
     })
 })
 
+server.get('/api/users/:id', (req, res) => {
+    const { id } = req.params;
+
+    db.findById(id)
+    .then(user => {
+        if(user) {
+            res.json(user)
+        }
+        else {
+            res.status(400).json({error: "Invalid ID"})
+        }
+    })
+    .catch( err => {
+        res.status(500).json({err: "There was an error getting this user"})
+    })
+})
 
 server.listen(port, () => {
     console.log(`Server is listening in port ${port}`)
