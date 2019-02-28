@@ -12,11 +12,13 @@ const port = '9000';
 server.use(express.json());
 //
 
-
+//test
 server.get('/',(req,res) => {
     res.send("Hello World")
 })
 
+
+//get all users
 server.get('/api/users', (req,res) => {
     db.find()
     .then(user => {
@@ -27,7 +29,7 @@ server.get('/api/users', (req,res) => {
     })
 })
 
-
+//add a user
 server.post('/api/users', (req, res) => {
     const newUser = req.body;
 
@@ -44,6 +46,7 @@ server.post('/api/users', (req, res) => {
     }
 });
 
+//delete user
 server.delete('/api/users/:id',(req,res) => {
     const { id } = req.params;
 
@@ -53,14 +56,15 @@ server.delete('/api/users/:id',(req,res) => {
             res.status(200).json({success: "Successfully deleted user"});
         }
         else {
-            res.status(400).json({err: "Invalid ID"})
+            res.status(400).json({err: "The user information could not be retrieved."})
         }
     })
     .catch( err => {
-        res.status(500).json({err: "There was an error deleting this user"})
+        res.status(500).json({err: "The user could not be removed"})
     })
 })
 
+//get single user
 server.get('/api/users/:id', (req, res) => {
     const { id } = req.params;
 
@@ -70,13 +74,35 @@ server.get('/api/users/:id', (req, res) => {
             res.json(user)
         }
         else {
-            res.status(400).json({error: "Invalid ID"})
+            res.status(400).json({error: "The user with the specified ID does not exist"})
         }
     })
     .catch( err => {
-        res.status(500).json({err: "There was an error getting this user"})
+        res.status(500).json({err: "The user information could not be retrieved."})
     })
 })
+
+server.put('/api/users/:id', (req,res) => {
+    const { id } = req.params;
+    const updatedUser = req.body;
+
+    db.update(id, updatedUser)
+    .then(databaseUser => {
+        if(databaseUser) {
+            res.json(databaseUser)
+        }
+        else {
+            res.status(400).json({error: "The user with the specified ID does not exist."})
+        }
+    })
+    .catch( err => {
+        res.status(500).json({err: "Could not update user."})
+    })
+
+})
+
+
+
 
 server.listen(port, () => {
     console.log(`Server is listening in port ${port}`)
